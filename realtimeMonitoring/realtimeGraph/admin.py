@@ -1,15 +1,5 @@
 from django.contrib import admin
-from .models import (
-    City,
-    Country,
-    Data,
-    Location,
-    Measurement,
-    Role,
-    State,
-    Station,
-    User,
-)
+from . models import City, Country, Data, Location, Measurement, Role, State, Station, User
 
 admin.site.register(Role)
 admin.site.register(User)
