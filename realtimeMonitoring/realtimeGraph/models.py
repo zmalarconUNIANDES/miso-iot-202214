@@ -45,6 +45,7 @@ class User(models.Model):
     def str(self):
         return "{}".format(self.login)
 
+
 class City(models.Model):
     name = models.CharField(max_length=50, unique=True, blank=False)
     code = models.CharField(max_length=50, null=True)
