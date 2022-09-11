@@ -5,11 +5,12 @@ import time
 
 import tempfile
 from realtimeMonitoring.utils import getCityCoordinates
-
+from django.core.serializers import serialize
 from django.template.defaulttags import register
 from django.contrib.auth import login, logout
 from realtimeGraph.forms import LoginForm
 from django.http import JsonResponse
+import ast
 from django.http.response import (
     FileResponse,
     Http404,
@@ -806,6 +807,33 @@ def get_city_data(request,**kwargs):
         result['data'] = data
    
         return JsonResponse(result)
+
+
+def get_new_json(request, **kwargs):
+
+    queryset = Data.objects.all().select_related('station', 'measurement').filter(
+        base_time_range=["2021-06-20 12:00:00.000000", "2021-06-20 23:59:59.000000"]).filter(valueslen_gt=190)
+
+    state_list_serialize = json.loads(serialize('json', queryset))
+    data_result = {}
+    data_array = []
+    for ex in range(len(state_list_serialize)):
+        pk = state_list_serialize[ex]['pk']
+        base_times = state_list_serialize[ex]['fields']['base_time']
+        valores = state_list_serialize[ex]['fields']['values']
+        station = state_list_serialize[ex]['fields']['station']
+        measurement = state_list_serialize[ex]['fields']['measurement']
+        j = ast.literal_eval(valores)
+        j = [float(n.strip()) for n in j]
+        for x in range(len(j)):
+            if j[x] >= 20.0:
+                data_array.append({"Pk": pk, "base_time": base_times,
+                                   "value": j[x], "Station": station, "measurement": measurement})
+
+    data_result["result"] = data_array
+    return JsonResponse(data_result)
+
+
 """
 Filtro para formatear datos en el template de index
 """
