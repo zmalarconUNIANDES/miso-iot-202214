@@ -778,7 +778,7 @@ def get_city_data(request,**kwargs):
         start_ts = int(start.timestamp() * 1000000)
         end_ts = int(end.timestamp() * 1000000)
         #.filter(time__gte=start_ts, time__lte=end_ts,station__location__city__name=city)
-        cities = Data.objects.filter(time__gte=start_ts, time__lte=end_ts,values_gt=190).values('values','measurement__name','station__location__city__name')
+        cities = Data.objects.filter(time__gte=start_ts, time__lte=end_ts,values__gte=190).values('values','measurement__name','station__location__city__name')
         data = {} 
         try:
                 for city in cities :
