@@ -519,29 +519,7 @@ La respuesta tiene esta estructura:
 def get_city_data(request,**kwargs):
         result = {}
         result['data']=[]
-        try:
-                start = datetime.fromtimestamp(
-                    float(request.GET.get('from', None))/1000)
-        except:
-            start = None
-        try:
-            end = datetime.fromtimestamp(
-                float(request.GET.get('to', None))/1000)
-        except:
-            end = None
-        if start == None and end == None:
-            start = datetime.now()
-            start = start - \
-                dateutil.relativedelta.relativedelta(
-                    weeks=1)
-            end = datetime.now()
-            end += dateutil.relativedelta.relativedelta(days=1)
-        elif end == None:
-            end = datetime.now()
-        elif start == None:
-            start = datetime.fromtimestamp(0)
-
-        cities = Data.objects.filter(time__gte=start.date(), time__lte=end.date()).values('value','measurement__name','station__location__city__name')
+        cities = Data.objects.filter(time__range=["2021-06-20 12:00:00.000000", "2021-06-20 23:59:59.000000"]).values('value','measurement__name','station__location__city__name')
         data = {} 
 
         try:
