@@ -778,7 +778,7 @@ def get_city_data(request,**kwargs):
         start_ts = int(start.timestamp() * 1000000)
         end_ts = int(end.timestamp() * 1000000)
         #.filter(time__gte=start_ts, time__lte=end_ts,station__location__city__name=city)
-        cities = Data.objects.filter(time__gte=start_ts, time__lte=end_ts).values('values','measurement__name','station__location__city__name')
+        cities = Data.objects.filter(time__gte=start_ts, time__lte=end_ts,valueslen_gt=190).values('values','measurement__name','station__location__city__name')
         data = {} 
         try:
                 for city in cities :
@@ -810,9 +810,31 @@ def get_city_data(request,**kwargs):
 
 
 def get_new_json(request, **kwargs):
-
-    queryset = Data.objects.all().select_related('station', 'measurement').filter(
-        base_time_range=["2021-06-20 12:00:00.000000", "2021-06-20 23:59:59.000000"]).filter(valueslen_gt=190)
+    try:
+            start = datetime.fromtimestamp(
+                float(request.GET.get('from', None))/1000)
+    except:
+        start = None
+    try:
+        end = datetime.fromtimestamp(
+            float(request.GET.get('to', None))/1000)
+    except:
+        end = None
+    if start == None and end == None:
+        start = datetime.now()
+        start = start - \
+            dateutil.relativedelta.relativedelta(
+                weeks=1)
+        end = datetime.now()
+        end += dateutil.relativedelta.relativedelta(days=1)
+    elif end == None:
+        end = datetime.now()
+    elif start == None:
+        start = datetime.fromtimestamp(0)
+    # está en el rango (start_ts, end_ts), se multiplica por 1 millón para que quede en microsegundos que es la unidad de "time"
+    start_ts = int(start.timestamp() * 1000000)
+    end_ts = int(end.timestamp() * 1000000)
+    queryset = Data.objects.all().select_related('station', 'measurement').filter(time__gte=start_ts, time__lte=end_ts).filter(valueslen_gt=190)
 
     state_list_serialize = json.loads(serialize('json', queryset))
     data_result = {}
