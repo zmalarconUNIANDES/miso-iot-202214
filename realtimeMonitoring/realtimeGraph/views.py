@@ -800,8 +800,8 @@ def get_city_data(request,**kwargs):
                             data[city['station__location__city__name']]['max_value'][city['measurement__name']] = value
                         if value < data[city['station__location__city__name']]['min_value'][city['measurement__name']]: 
                             data[city['station__location__city__name']]['min_value'][city['measurement__name']] = value
-        except:
-            start = None
+        except Exception as e:
+            print(e)
         
         result['data'] = data
    
