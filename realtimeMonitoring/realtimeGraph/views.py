@@ -541,7 +541,7 @@ def get_city_data(request,**kwargs):
         elif start == None:
             start = datetime.fromtimestamp(0)
 
-        cities = Data.objects.select_related('measurement','station__user__role','station__location__city').filter(time__gte=start.date(), time__lte=end.date()).values('value','station__user__role__name','station_id','measurement__name','station__location__city__name','time').order_by('value')
+        cities = Data.objects.filter(time__gte=start.date(), time__lte=end.date()).values('value','measurement__name','station__location__city__name')
         data = {} 
         for city in cities :
             if( city['station__location__city__name'] not in data  ):
