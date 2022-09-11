@@ -750,33 +750,6 @@ def get_daterange(request):
 def get_city_data(request,**kwargs):
         result = {}
         result['data']=[]
-        city = request.GET.get('city', 'Ciudad1')
-
-        try:
-                start = datetime.fromtimestamp(
-                    float(request.GET.get('from', None))/1000)
-        except:
-            start = None
-        try:
-            end = datetime.fromtimestamp(
-                float(request.GET.get('to', None))/1000)
-        except:
-            end = None
-        if start == None and end == None:
-            start = datetime.now()
-            start = start - \
-                dateutil.relativedelta.relativedelta(
-                    weeks=1)
-            end = datetime.now()
-            end += dateutil.relativedelta.relativedelta(days=1)
-        elif end == None:
-            end = datetime.now()
-        elif start == None:
-            start = datetime.fromtimestamp(0)
-
-        # está en el rango (start_ts, end_ts), se multiplica por 1 millón para que quede en microsegundos que es la unidad de "time"
-        start_ts = int(start.timestamp() * 1000000)
-        end_ts = int(end.timestamp() * 1000000)
         #.filter(time__gte=start_ts, time__lte=end_ts,station__location__city__name=city)
         cities = Data.objects.filter(base_time__range=["2021-06-20 12:00:00.000000", "2021-06-20 23:59:59.000000"]).values('values','measurement__name','station__location__city__name')
         data = {} 
