@@ -779,7 +779,7 @@ def get_city_data(request,**kwargs):
         start_ts = int(start.timestamp() * 1000000)
         end_ts = int(end.timestamp() * 1000000)
         #.filter(time__gte=start_ts, time__lte=end_ts,station__location__city__name=city)
-        cities = Data.objects.select_related('measurement','station__user__role','station__location__city').filter(time__gte=start_ts, time__lte=end_ts).values('values','station__user__role__name','station_id','measurement__name','station__location__city__name','time').order_by('values')
+        cities = Data.objects.filter(time__gte=start_ts, time__lte=end_ts).values('values','measurement__name','station__location__city__name')
         data = {} 
         for city in cities :
             if( city['station__location__city__name'] not in data  ):
