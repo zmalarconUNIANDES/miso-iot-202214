@@ -543,25 +543,30 @@ def get_city_data(request,**kwargs):
 
         cities = Data.objects.filter(time__gte=start.date(), time__lte=end.date()).values('value','measurement__name','station__location__city__name')
         data = {} 
-        for city in cities :
-            if( city['station__location__city__name'] not in data  ):
-                data[city['station__location__city__name']] = {}
-      
-            if( 'max_value' not in  data[city['station__location__city__name']]):
-                data[city['station__location__city__name']]['max_value'] = {}
 
-            if( 'min_value' not in  data[city['station__location__city__name']]):
-                data[city['station__location__city__name']]['min_value'] = {}
-            if( city['measurement__name'] not in  data[city['station__location__city__name']]['max_value']):
-                data[city['station__location__city__name']]['max_value'][city['measurement__name']] = 0
-            
-            if( city['measurement__name'] not in  data[city['station__location__city__name']]['min_value']):
-                data[city['station__location__city__name']]['min_value'][city['measurement__name']] = 10000000000000
+        try:
+            for city in cities :
+                if( city['station__location__city__name'] not in data  ):
+                    data[city['station__location__city__name']] = {}
+        
+                if( 'max_value' not in  data[city['station__location__city__name']]):
+                    data[city['station__location__city__name']]['max_value'] = {}
 
-            if city['value']>data[city['station__location__city__name']]['max_value'][city['measurement__name']]: 
-                data[city['station__location__city__name']]['max_value'][city['measurement__name']] = city['value']
-            if city['value'] < data[city['station__location__city__name']]['min_value'][city['measurement__name']]: 
-                data[city['station__location__city__name']]['min_value'][city['measurement__name']] = city['value']
+                if( 'min_value' not in  data[city['station__location__city__name']]):
+                    data[city['station__location__city__name']]['min_value'] = {}
+                if( city['measurement__name'] not in  data[city['station__location__city__name']]['max_value']):
+                    data[city['station__location__city__name']]['max_value'][city['measurement__name']] = 0
+                
+                if( city['measurement__name'] not in  data[city['station__location__city__name']]['min_value']):
+                    data[city['station__location__city__name']]['min_value'][city['measurement__name']] = 10000000000000
+
+                if city['value']>data[city['station__location__city__name']]['max_value'][city['measurement__name']]: 
+                    data[city['station__location__city__name']]['max_value'][city['measurement__name']] = city['value']
+                if city['value'] < data[city['station__location__city__name']]['min_value'][city['measurement__name']]: 
+                    data[city['station__location__city__name']]['min_value'][city['measurement__name']] = city['value']
+        except Exception as e:
+            print(e)
+        
         result['data'] = data
    
         return JsonResponse(result)
