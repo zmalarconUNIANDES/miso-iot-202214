@@ -778,7 +778,7 @@ def get_city_data(request,**kwargs):
         start_ts = int(start.timestamp() * 1000000)
         end_ts = int(end.timestamp() * 1000000)
         #.filter(time__gte=start_ts, time__lte=end_ts,station__location__city__name=city)
-        cities = Data.objects.filter(time__gte=start_ts, time__lte=end_ts,valueslen_gt=190).values('values','measurement__name','station__location__city__name')
+        cities = Data.objects.filter(time__gte=start_ts, time__lte=end_ts,values_gt=190).values('values','measurement__name','station__location__city__name')
         data = {} 
         try:
                 for city in cities :
@@ -834,7 +834,7 @@ def get_new_json(request, **kwargs):
     # está en el rango (start_ts, end_ts), se multiplica por 1 millón para que quede en microsegundos que es la unidad de "time"
     start_ts = int(start.timestamp() * 1000000)
     end_ts = int(end.timestamp() * 1000000)
-    queryset = Data.objects.all().select_related('station', 'measurement').filter(time__gte=start_ts, time__lte=end_ts).filter(valueslen_gt=190)
+    queryset = Data.objects.all().select_related('station', 'measurement').filter(time__gte=start_ts, time__lte=end_ts).filter(values_gt=190)
 
     state_list_serialize = json.loads(serialize('json', queryset))
     data_result = {}
