@@ -9,7 +9,6 @@ urlpatterns = [
     path("rema/", RemaView.as_view(), name="rema"),
     path("rema/<str:measure>", RemaView.as_view(), name="rema"),
     path('city_data/', get_city_data, name='get_city_data'),
-    path('city_info/', get_new_json, name='get_new_json'),
     path("mapJson/", get_map_json, name="mapJson"),
     path("mapJson/<str:measure>", get_map_json, name="mapJson"),
     path("login/", LoginView.as_view(), name="login"),
